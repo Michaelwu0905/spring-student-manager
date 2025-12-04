@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 20px; text-align: center; }
+        .toolbar { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn:hover { opacity: 0.9; }
+        .search-form { display: flex; gap: 10px; }
+        .search-form input { padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 200px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; font-weight: bold; }
+        tr:hover { background: #f5f5f5; }
+        .message { padding: 10px; background: #d4edda; color: #155724; border-radius: 4px; margin-bottom: 20px; }
+        .actions { display: flex; gap: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 学生管理系统</h1>
+
+        <!-- 成功消息 -->
+        <div th:if="${message}" class="message" th:text="${message}"></div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <a th:href="@{/students/add}" class="btn btn-primary">➕ 添加学生</a>
+            <form th:action="@{/students/search}" method="get" class="search-form">
+                <input type="text" name="keyword" placeholder="输入姓名搜索..." th:value="${keyword}">
+                <button type="submit" class="btn btn-primary">🔍 搜索</button>
+                <a th:href="@{/students}" class="btn btn-warning">重置</a>
+            </form>
+        </div>
+
+        <!-- 学生表格 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>年龄</th>
+                    <th>专业</th>
+                    <th>班级</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${student.id}"></td>
+                    <td th:text="${student.studentNo}"></td>
+                    <td th:text="${student.name}"></td>
+                    <td th:text="${student.gender}"></td>
+                    <td th:text="${student.age}"></td>
+                    <td th:text="${student.major}"></td>
+                    <td th:text="${student.className}"></td>
+                    <td th:text="${student.email}"></td>
+                    <td class="actions">
+                        <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-warning">编辑</a>
+                        <a th:href="@{/students/delete/{id}(id=${student.id})}" class="btn btn-danger" onclick="return confirm('确定删除吗？')">删除</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(students)}">
+                    <td colspan="9" style="text-align: center; color: #999;">暂无数据</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
